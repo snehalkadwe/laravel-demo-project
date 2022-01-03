@@ -45,6 +45,7 @@
             </div>
         </div>
     </div>
+    {{-- list of posts --}}
     <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
         <!-- This example requires Tailwind CSS v2.0+ -->
         <div class="flex flex-col">
@@ -70,6 +71,10 @@
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Slug
                                     </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Link
+                                    </th>
                                     <th scope="col" class="relative px-6 py-3">
                                         Action
                                     </th>
@@ -94,10 +99,19 @@
                                         {{ $post->description }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
+                                        {{ $post->slug }}
+
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
                                         <span
-                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                            {{ $post->slug }}
+                                            class="px-2 inline-flex text-s leading-8 font-semibold
+                                            rounded-full bg-green-100 text-green-800" onclick="copyURL({{ $post->id }})">
+                                            {{-- {{  Request::url() .'/'. $post->slug }} --}}
+                                            {{ config('app.url') .'/post/'.$post->slug }}
                                         </span>
+                                        <br>
+                                        <input type="text" value="{{ config('app.url') .'/post/'.$post->slug}}"
+                                        id="{{ 'copyUrl' .$post->id }}" style="display: none;">
                                     </td>
 
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -113,3 +127,20 @@
         </div>
     </div>
 </x-app-layout>
+<script type="text/javascript">
+    function copyURL(postId) {
+        /* Get the text field */
+        let copyUrl = document.querySelector(`#copyUrl${postId}`);
+
+        /* Select the text field */
+        copyUrl.select();
+        copyUrl.setSelectionRange(0, 99999); // for mobile device
+
+        /* Copy the text inside the text field */
+        document.execCommand("copy");
+        navigator.clipboard.writeText(copyUrl.value);
+
+        /* Alert the copied text */
+        alert("Copied the text: " + copyUrl.value);
+    }
+</script>
